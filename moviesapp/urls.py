@@ -9,6 +9,8 @@ urlpatterns = [
     path('years-genre-language', views.movieDetailsByYearsOrGenresOrLanguagesOrAll, name='yearsGenreLanguage'),
     path('rated-movie-users', views.ratedMovieByUsers, name='ratedMovieByUsers'),
     path('test-data', views.testData, name='testData'),
-    path('top-rated', views.topRated, name='topRated')
+    # path('top-rated', views.topRated, name='topRated'),
+    path('search-movies', views.searchMovies, name='searchMovies'),
+    path('actor-page', views.actorInfo, name='actorInfo')
 
 ]

@@ -214,6 +214,7 @@ def insertUserRatingData(movieID, rated, user_name):
     except Exception as error:
         return error
 
+
 def moviesMediaData(movieID):
     try:
         cursor = connection.cursor()
@@ -224,6 +225,90 @@ def moviesMediaData(movieID):
               """
         cursor.execute(SQL, (movieID,))
         list_data = cursor.fetchall()
+        return list_data, None
+    except Exception as error:
+        return None, error
+
+
+def moviesDetailByName(searchMovie):
+    try:
+        cursor = connection.cursor()
+        #  SQL
+        SQL = """
+            select cpte.id,
+                   cpte.movie_name,
+                   cpte.release_date,
+                   cpte.image_link,
+                   cpte.rating_percentage,
+                   cpte.entertainment_type,
+                   m.timePeriod,
+                   m.movieOverView,
+                   replace(m.videoTrailerLink,'watch?v=','embed/') videoTrailerLink,
+                   m.poster_image,
+                   m.entertainmentType,
+                   m2.originalLanguage,
+                   m2.releaseOrNot,
+                   m2.budget,
+                   m2.revenue
+            from crawling_pagination_table_entertainment cpte
+                     join moviedetails m on cpte.id =  m.movieID
+                     join moviefacts m2 on cpte.id = m2.movieID
+                    """
+        SQL += """  where cpte.movie_name like '%""" + str(searchMovie) + """%'"""
+        print(SQL)
+        cursor.execute(SQL)
+        list_data = cursor.fetchall()
+        return list_data, None
+    except Exception as error:
+        return None, error
+
+
+def finActorInfo(actorName):
+    try:
+        cursor = connection.cursor()
+        # SQL
+        SQL = """     
+        select id,
+           adult,
+           also_known_as,
+           biography,
+           birthday,
+           death_day,
+           gender,
+           home_page,
+           imdb_id,
+           tmdb_id,
+           known_for_department,
+           name,
+           place_of_birth,
+           popularity,
+           profile_path,
+           archived_at
+        from actor_info
+        where name = %s;    
+              """
+        cursor.execute(SQL, (actorName,))
+        list_data = cursor.fetchall()
+        print(list_data)
+        return list_data, None
+    except Exception as error:
+        return None, error
+
+
+def actorMoviesByName(actorName):
+    try:
+        cursor = connection.cursor()
+        # SQL
+        SQL = """
+               select movieID,movie_name,image_link
+                from moviecastpeople
+                         join crawling_pagination_table_entertainment cpte on cpte.id = moviecastpeople.movieID
+                where realName = %s;
+    
+              """
+        cursor.execute(SQL, (actorName,))
+        list_data = cursor.fetchall()
+        print(list_data)
         return list_data, None
     except Exception as error:
         return None, error
